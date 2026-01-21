@@ -15,8 +15,6 @@ app.listen(port, ()=>{
 
 
 
-
-
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -40,48 +38,48 @@ const createRandomUser = () => {
 
 
 
-let data = [];
+// let data = [];
 
-for(let i=1; i<=100; i++)
-{
-    data.push(createRandomUser());
-
-
-}
-
-console.log("Data Count ", data.length);
+// for(let i=1; i<=100; i++)
+// {
+//     data.push(createRandomUser());
 
 
+// }
 
-let q =  "INSERT into users(id, username, email, password) values ?  ";
-
-// let q =  "select * from users";
+// console.log("Data Count ", data.length);
 
 
 
+// let q =  "INSERT into users(id, username, email, password) values ?  ";
 
-try{
-
-    connection.query(q, [data], (err, result)=>{
-
-        if (err) throw err;
-        console.log(result);
+// // let q =  "select * from users";
 
 
 
-    })
+
+// try{
+
+//     connection.query(q, [data], (err, result)=>{
+
+//         if (err) throw err;
+//         console.log(result);
 
 
 
-}
+//     })
 
 
 
-catch(err){
+// }
 
-    console.log(err);
 
-}
+
+// catch(err){
+
+//     console.log(err);
+
+// }
 
 
 
@@ -89,7 +87,33 @@ catch(err){
 
 app.get("/", (req, res)=>{
 
-    res.send("You contacted the root path");
+    
+    let q =  "Select count(*) as total_users  from users ";
+
+    try{
+
+        connection.query(q, (err, result)=>{
+
+            let users =  result[0]["total_users"];
+            
+            res.render("totalUsers.ejs", {users});
+            
+        
+
+        })
+
+    }
+        
+    catch(err)
+    {
+        console.log(err);
+
+
+    }
+
+
+    
+
 
 
 
