@@ -83,7 +83,7 @@ const createRandomUser = () => {
 
 
 
-
+// Route to show count of total users in Database 
 
 app.get("/", (req, res)=>{
 
@@ -99,7 +99,6 @@ app.get("/", (req, res)=>{
             res.render("totalUsers.ejs", {users});
             
         
-
         })
 
     }
@@ -111,10 +110,79 @@ app.get("/", (req, res)=>{
 
     }
 
+})
 
-    
 
+
+app.get("/users", (req, res)=>{
+
+
+    let q =  "select * from users ";
+
+
+
+    try{
+
+        connection.query(q, (err, result)=>{
+
+
+            res.render("showUsers.ejs", {users : result });
+
+
+
+        })
+
+
+
+    }
+
+
+
+catch(err)
+{
+  
+    console.log(err);
+    res.send("Due to the technical error we are not able to display the users ");
+
+}
 
 
 
 })
+
+
+
+app.get("/users/:id/edit", (req, res)=>{
+
+
+    let {id} =  req.params;
+    
+    let q = `select * from users where id = '${id}' `;
+
+    try{
+
+        connection.query(q, (err, result)=>{
+
+            
+            let user =  result[0];
+            
+            res.render("edit.ejs", {user});
+
+
+
+    })
+
+
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.send("Due to the technical error we are not able to edit the username  ");
+
+
+    }
+
+
+})
+
