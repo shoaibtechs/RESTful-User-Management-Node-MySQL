@@ -4,6 +4,14 @@ const port = 8080;
 
 const { faker } = require('@faker-js/faker');
 const mysql = require('mysql2');
+const methodOverride = require('method-override')
+
+app.use(methodOverride('_method'))
+app.use(express.urlencoded({extended:true}));
+
+
+
+
 
 
 app.listen(port, ()=>{
@@ -185,4 +193,77 @@ app.get("/users/:id/edit", (req, res)=>{
 
 
 })
+
+
+app.patch("/users/:id", (req, res)=>{
+
+
+    let{id} =  req.params;
+
+    let {password , username:newUsername} =  req.body;
+
+    let q = `select * from users where id='${id}' `;
+    
+    try{
+
+            connection.query(q, (err, result)=>{
+
+
+                if(err) throw err ;
+                    
+                let user =  result[0];
+
+
+                if(user.password.trim() ===  password.trim()  )
+                {
+
+
+                    let q2 =  `update users set username='${newUsername}' where id='${id}' `;
+
+                    connection.query(q2, (err, result )=>{
+
+                        if(err) throw err;
+                        res.redirect("/users");
+
+
+                    })
+
+
+
+
+                }
+                else{
+
+                    res.send(`Wrong Password `);
+
+
+                }
+
+
+
+            })
+        
+
+        
+
+        }
+
+
+
+    
+
+    
+    catch(err){
+
+        console.log(err);
+        res.send("Due to the technical error we are not able to edit the username from patch request  ");
+
+
+
+    }
+    
+
+    
+})
+
 
