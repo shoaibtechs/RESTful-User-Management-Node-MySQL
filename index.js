@@ -4,7 +4,9 @@ const port = 8080;
 
 const { faker } = require('@faker-js/faker');
 const mysql = require('mysql2');
-const methodOverride = require('method-override')
+const methodOverride = require('method-override');
+
+const{v4 : uuidv4} = require('uuid');
 
 app.use(methodOverride('_method'))
 app.use(express.urlencoded({extended:true}));
@@ -267,3 +269,64 @@ app.patch("/users/:id", (req, res)=>{
 })
 
 
+app.get("/users/new", (req, res)=>{
+
+
+    res.render("new.ejs");
+
+
+
+
+})
+
+
+app.post("/users",(req, res)=>{
+
+
+    let {username, password, email} = req.body;
+    let id =  uuidv4();
+
+
+    let q = "INSERT INTO users (id, username, email, password)   values ? ";
+
+    let user = [[id, username, email, password]];
+
+    try{
+
+        connection.query(q, [user], (err, result)=>{
+
+            if(err) throw err ;
+
+            res.redirect("/users");
+
+
+        })
+
+
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.send("Due to the technical error we are not able to add the  username");
+
+
+    }
+
+
+})
+
+
+app.get("/users/:id/delete", (req, res)=>{
+
+
+    let{id} = req.params;
+
+
+
+    res.render("delete.ejs");
+
+
+
+
+})
