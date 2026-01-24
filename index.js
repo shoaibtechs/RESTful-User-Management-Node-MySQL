@@ -322,10 +322,107 @@ app.get("/users/:id/delete", (req, res)=>{
 
     let{id} = req.params;
 
+    let q =  `select * from users where id='${id }' `;
 
 
-    res.render("delete.ejs");
+    try{
 
+        connection.query(q, (err, result)=>{
+
+
+            let user = result[0];
+
+            res.render("delete.ejs", {user});
+
+
+
+        })
+
+      
+
+
+
+    }
+
+
+    catch(err)
+    
+    {
+
+          console.log(err);
+          res.send("Due to the technical error we are not able to delete the  username");
+
+    }
+
+
+    
+
+
+
+})
+
+
+app.delete("/users/:id", (req, res)=>{
+
+    let {id} = req.params;
+    let {username, password} =  req.body;    
+    
+    
+    let q = `select * from users where id='${id}' `;
+
+
+    try{
+
+        connection.query(q, (err, result)=>{
+
+            if(err) throw err;
+
+        let user = result[0];
+
+        if(user.username.trim() == username.trim() && user.password.trim() == password.trim()   )
+        {
+
+
+            let q2 = `delete from users where id='${id}' `;
+            
+            
+            connection.query(q2, (err, result )=>{
+
+                if(err) throw err;
+
+                 res.redirect("/users");
+
+
+
+            })
+            
+            
+           
+
+
+        }
+
+
+        else{
+
+            res.send("Wrong username or password ");
+
+        }
+
+
+
+        })
+
+
+
+    }
+
+    catch(err){
+
+        console.log(err);
+          res.send("Due to the technical error we are not able to delete the  user form delete request");
+
+    }
 
 
 
